@@ -201,17 +201,18 @@ export default function BeerRecallChecker() {
 
   const downloadCSV = () => {
     if (!results) return;
-    let csv = 'รหัสร้าน,ชื่อร้าน,รหัสสินค้า,ชื่อสินค้า,จำนวนขนส่ง,จำนวนคลัง,Remark\n';
+    const rows = ['รหัสร้าน,ชื่อร้าน,รหัสสินค้า,ชื่อสินค้า,จำนวนขนส่ง,จำนวนคลัง,Remark'];
 
     for (const wh of ['D004', 'TDEA-04']) {
       const stores = results[wh] || {};
       for (const store of Object.values(stores)) {
         store.rows.forEach(row => {
-          csv += `${store.code},${store.name},${row.product_code},${row.product_name},${row.transport},${row.warehouse},"${row.remark}"\n`;
+          rows.push(`${store.code},${store.name},${row.product_code},${row.product_name},${row.transport},${row.warehouse},"${row.remark}"`);
         });
       }
     }
 
+    const csv = rows.join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
